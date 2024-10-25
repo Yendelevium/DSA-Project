@@ -44,6 +44,7 @@ class AVLTree:
         node2.height = max(self.getHeight(node2.left), self.getHeight(node2.right)) + 1
         return node2
 
+    # O(logn) where n is the total no.of nodes in the tree
     def insertGame(self, node, game):
         if node is None:
             return Node(game)
@@ -75,6 +76,7 @@ class AVLTree:
 
         return node
 
+    # O(logn) where n is the total no.of nodes in the tree
     def getMin(self, node):
         if not node:
             return None
@@ -83,6 +85,7 @@ class AVLTree:
             current = current.left
         return current
 
+    # O(logn) where n is the total no.of nodes in the tree
     def delete(self, node, game):
         if not node:
             return node
@@ -127,11 +130,13 @@ class AVLTree:
 
         return node
 
+    # O(n) where n is the total no.of nodes in the tree
     def inorderTraversal(self, node):
         if node is None:
             return []
         return self.inorderTraversal(node.left) + [node.game] + self.inorderTraversal(node.right)
 
+    # O(logn) where n is the total no.of nodes in the tree
     def searchNode(self, node, id):
         if node is None:
             return None

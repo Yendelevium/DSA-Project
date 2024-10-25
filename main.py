@@ -36,13 +36,15 @@ class GameStore:
         self.gameHeap=None
         self.gameTrie=None
 
-    # AVL Tree Stuff
+    # O(n) where n is the total no.of nodes in the tree
     def getAllGames(self):
         return self.gameAVL.inorderTraversal(self.gameAVL.root)
 
+    # O(logn) where n is the total no.of nodes in the tree
     def findGame(self,id):
         return self.gameAVL.searchNode(self.gameAVL.root,id)
 
+    # O(logn) where n is the total no.of nodes in the tree
     def insertGame(self,game):
         self.gameAVL.root=self.gameAVL.insertGame(self.gameAVL.root,game)
         return
