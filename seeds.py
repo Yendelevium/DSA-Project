@@ -3,7 +3,7 @@ from ADT import Game
 def getGames():
     return games
 games = [
-    Game("Hi", 10, ["HOE"], 12, 4),
+    Game("Hi", 10, ["test"], 12, 4),
     Game("Hi", 10, ["HOE"], 12, 3),
     Game("Hi", 10, ["HOE"], 12, 1),
     Game("Hi", 10, ["HOE"], 12, 12),
