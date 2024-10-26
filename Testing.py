@@ -1,4 +1,5 @@
 from ADT import Game, Review
+from Trie import Trie
 from AVLTree import AVLTree
 from seeds import getGames
 class GameStore:
@@ -6,7 +7,8 @@ class GameStore:
         self.gameAVL=AVLTree()
         self.gameGraph=None
         self.gameHeap=None
-        self.gameTrie=None
+        self.gameTrie=Trie()
+        self.gameNameToId = {}
 
     # AVL Tree Stuff
     def getAllGames(self):
@@ -17,14 +19,26 @@ class GameStore:
 
     def insertGame(self,game):
         self.gameAVL.root=self.gameAVL.insertGame(self.gameAVL.root,game)
+        self.gameTrie.insert(game.name)
+        self.gameNameToId[game.name] = game.id
         return
 
-    def gameNameSearch(self,gameName):
+    def gameNameSearch(self, gameName):
         # Must return a list of games which match
-        # You can have a hashmap which maps the game names to the id, and u can search the id's in an AVL Tree
+        # You can have a hashmap which maps the game names to the id, and you can search the ids in an AVL Tree
         # Then return the list of games
-        self.findGame("ID GOTTEN FRM HASHMAP")
-        return
+
+        matchedNames = self.gameTrie.search(gameName)
+        if isinstance(matchedNames, bool) or not matchedNames:
+            # If no exact match, try autocomplete
+            matchedNames = self.gameTrie.autocomplete(gameName)
+            if not matchedNames:
+                # If no autocomplete results, try autocorrect
+                matchedNames = self.gameTrie.autocorrect(gameName)
+        
+        matchedGames = [self.findGame(self.gameNameToId[name]) for name in matchedNames]
+        for name in matchedNames:
+            self.game_info(self.gameNameToId[name])
 
     def sortRating(self,order):
         return
@@ -45,7 +59,7 @@ class GameStore:
             for j in range(0,len(i.genre)):
                 print(i.genre[j], end=" ")
             print()
-        gameChoice = int(input())
+    def game_info(self,gameChoice):
         retrievedGame = self.findGame(gameChoice)
         if retrievedGame is None:
             raise IndexError("Game doesn't exist")
@@ -102,13 +116,14 @@ while True:
     if choice==1:
         allGames=gameStore.getAllGames()
         gameStore.gameSelection(allGames)
-
+        gameStore.game_info(int(input("Enter the ID of the game you want to know more about")))
+        
     elif choice==2:
         print("Enter the name of the game")
         gameSearch=input()
         foundGames=gameStore.gameNameSearch(gameSearch)
-        gameStore.gameSelection(foundGames)
-
+        print("Found Games:",foundGames)
+        
     elif choice==3:
         print("1. High to Low")
         print("2. Low to High")
