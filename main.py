@@ -169,12 +169,13 @@ class GameStore:
             print('\t', i)
 
         similar_games = self.gameGraph.similarGames(retrievedGame)
-        if similar_games: 
+        if similar_games:
             print("\nSimilar Games: ")
-            for game_name in similar_games:
-                print("\t", game_name)
+            count = min(len(similar_games), 8)
+            for game_name in range(count):
+                print("\t", similar_games[game_name])
         else:
-            print("\nNo Similar Games")
+            print("\nNo Similar Games.")
         
         ch = input("Would you like to see the reviews?(Y/N)").upper()
         if ch=="Y":
