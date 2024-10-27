@@ -136,6 +136,8 @@ class GameStore:
             print("\nSimilar Games: ")
             for game_name in similar_games:
                 print("\t", game_name)
+        else:
+            print("\nNo Similar Games")
         ch=input("Would you like to see the reviews?(Y/N)").upper()
 
         # Todo : Adding reviews to the game
