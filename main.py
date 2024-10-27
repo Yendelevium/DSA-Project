@@ -27,6 +27,7 @@ REVIEW
 
 """
 from ADT import Game, Review
+from Trie import Trie
 from AVLTree import AVLTree
 from seeds import getGames
 import MinHeap
@@ -35,27 +36,42 @@ class GameStore:
         self.gameAVL=AVLTree()
         self.gameGraph=None
         self.gameHeap=None
-        self.gameTrie=None
+        self.gameTrie=Trie()
+        self.gameNameToId = {}
 
-    # O(n) where n is the total no.of nodes in the tree
+    # AVL
     def getAllGames(self):
         return self.gameAVL.inorderTraversal(self.gameAVL.root)
 
-    # O(logn) where n is the total no.of nodes in the tree
     def findGame(self,id):
         return self.gameAVL.searchNode(self.gameAVL.root,id)
 
-    # O(logn) where n is the total no.of nodes in the tree
     def insertGame(self,game):
         self.gameAVL.root=self.gameAVL.insertGame(self.gameAVL.root,game)
+        self.gameTrie.insert(game.name)
+        self.gameNameToId[game.name] = game.id
         return
 
-    def gameNameSearch(self,gameName):
+    def gameNameSearch(self, gameName):
         # Must return a list of games which match
-        # You can have a hashmap which maps the game names to the id, and u can search the id's in an AVL Tree
+        # You can have a hashmap which maps the game names to the id, and you can search the ids in an AVL Tree
         # Then return the list of games
-        self.findGame("ID GOTTEN FRM HASHMAP")
-        return
+
+        # Use C to get the demo of more than one game
+        matchedNames = self.gameTrie.search(gameName)
+        if isinstance(matchedNames, bool) or not matchedNames:
+            # If no exact match, try autocomplete
+            matchedNames = self.gameTrie.autocomplete(gameName)
+            if not matchedNames:
+                # If no autocomplete results, try autocorrect
+                matchedNames = self.gameTrie.autocorrect(gameName)
+        matchedGames = [self.findGame(self.gameNameToId[name]).id for name in matchedNames]
+        if (len(matchedNames)> 1):
+            self.gameSelection([self.findGame(self.gameNameToId[name]) for name in matchedNames])
+        elif (len(matchedNames) == 1):
+            self.game_info(matchedGames[0])
+        else:
+            print("No games found with the entered name")
 
     def sortRating(self,order):
         if order == "ascending":
@@ -114,7 +130,12 @@ class GameStore:
                 print(i.genre[j], end=" ")
             print()
         print("____________________________________")
-        gameChoice = int(input())
+        search_id = int(input())
+        if(search_id <= id):
+            self.game_info(search_id)
+        else:
+            print("Invalid Game ID")
+    def game_info(self,gameChoice):
         retrievedGame = self.findGame(gameChoice)
         if retrievedGame is None:
             raise IndexError("Game doesn't exist")
@@ -136,11 +157,12 @@ class GameStore:
             return
         else:
             return
+# Driver Code
 gameStore=GameStore()
 games = getGames()
 for i in games:
     gameStore.insertGame(i)
-id=31 #We alr have 31 games in the tree
+id=37 #We alr have 37 games in the tree
 while True:
     print("Welcome to <Name>")
     print("Enter the corresponding option number")
@@ -176,8 +198,9 @@ while True:
         print("Enter the name of the game")
         gameSearch=input()
         foundGames=gameStore.gameNameSearch(gameSearch)
-        gameStore.gameSelection(foundGames)
-
+        if (foundGames):    
+            print("Found Games:",foundGames)
+        
     elif choice==3:
         print("1. High to Low")
         print("2. Low to High")
@@ -219,13 +242,13 @@ while True:
 
     elif choice==6:
         name=input("Game Name\t:")
-        price=input("Price\t:")
-        rating=input("Rating\t:")
+        price=float(input("Price\t:"))
+        rating=float(input("Rating\t:"))
         genre=input("Genre(separated by space)\t:").split()
+        id+=1
         newGame= Game(name,price,genre,rating,id)
         gameStore.insertGame(newGame)
         print("Successfully added a new game!")
-        id+=1
     else:
         print("Not an option, Thank you for stopping by!")
         break
