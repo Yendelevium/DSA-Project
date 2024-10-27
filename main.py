@@ -132,8 +132,12 @@ class GameStore:
             return self.gameHeapPriceDesc.extractSortedGames()
         return []
 
-    def getGenreGames(self, genre):
-        return self.gameGraph.getGenreGames(genre)
+    def getGenreGames(self,genre):
+        genbased = self.gameGraph.getGenreGames(genre)
+        gs = []
+        for game in genbased:
+            gs.append(game)
+        return gs
 
     def gameSelection(self, games):
         print("Enter ID to know more about the following games")
