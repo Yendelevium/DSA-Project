@@ -30,12 +30,13 @@ from ADT import Game, Review
 from Trie import Trie
 from AVLTree import AVLTree
 from seeds import getGames
-import MinHeap
+from Minheap import MinHeap
 class GameStore:
     def __init__(self):
         self.gameAVL=AVLTree()
         self.gameGraph=None
-        self.gameHeap=None
+        self.gameHeapRating=MinHeap("rating")
+        self.gameHeapPrice=MinHeap("price")
         self.gameTrie=Trie()
         self.gameNameToId = {}
 
@@ -50,6 +51,8 @@ class GameStore:
         self.gameAVL.root=self.gameAVL.insertGame(self.gameAVL.root,game)
         self.gameTrie.insert(game.name)
         self.gameNameToId[game.name] = game.id
+        self.gameHeapPrice.insert(game)
+        self.gameHeapRating.insert(game)
         return
 
     def gameNameSearch(self, gameName):
@@ -75,9 +78,8 @@ class GameStore:
 
     def sortRating(self,order):
         if order == "ascending":
-            MinH = MinHeap.MinHeap(priority_field="rating")
+            MinH = self.gameHeapRating
             
-            MinH.importGames()
             sorted_games = MinH.extractSortedGames()
             top_10_games = [
                 sorted_games[0],
@@ -96,9 +98,8 @@ class GameStore:
 
     def sortPrice(self,order):
         if order == "ascending":
-            MinH = MinHeap.MinHeap(priority_field="price")
+            MinH = self.gameHeapPrice
             
-            MinH.importGames()
             sorted_games = MinH.extractSortedGames()
             top_10_games = [
                 sorted_games[0],
