@@ -90,14 +90,44 @@ class GameStore:
 
     def sortRating(self, order):
         if order == "ascending":
-            return self.gameHeapRating.extractSortedGames()
+            MinH = self.gameHeapRating
+            
+            sorted_games = MinH.extractSortedGames()
+            top_10_games = [
+                sorted_games[0],
+                sorted_games[1],
+                sorted_games[2],
+                sorted_games[3], 
+                sorted_games[4],
+                sorted_games[5],
+                sorted_games[6],
+                sorted_games[7],
+                sorted_games[8],
+                sorted_games[9]
+            ]
+            return top_10_games
         elif order == "descending":
             return self.gameHeapRatingDesc.extractSortedGames()
         return []
 
     def sortPrice(self, order):
         if order == "ascending":
-            return self.gameHeapPrice.extractSortedGames()
+            MinH = self.gameHeapPrice
+            
+            sorted_games = MinH.extractSortedGames()
+            top_10_games = [
+                sorted_games[0],
+                sorted_games[1],
+                sorted_games[2],
+                sorted_games[3], 
+                sorted_games[4],
+                sorted_games[5],
+                sorted_games[6],
+                sorted_games[7],
+                sorted_games[8],
+                sorted_games[9]
+            ]
+            return top_10_games
         elif order == "descending":
             return self.gameHeapPriceDesc.extractSortedGames()
         return []
