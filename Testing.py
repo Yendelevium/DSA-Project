@@ -1,6 +1,7 @@
 from ADT import Game, Review
 from AVLTree import AVLTree
 from seeds import getGames
+import MinHeap
 class GameStore:
     def __init__(self):
         self.gameAVL=AVLTree()
@@ -27,9 +28,45 @@ class GameStore:
         return
 
     def sortRating(self,order):
+        if order == "ascending":
+            MinH = MinHeap.MinHeap(priority_field="rating")
+            
+            MinH.importGames()
+            sorted_games = MinH.extractSortedGames()
+            top_10_games = [
+                sorted_games[0],
+                sorted_games[1],
+                sorted_games[2],
+                sorted_games[3], 
+                sorted_games[4],
+                sorted_games[5],
+                sorted_games[6],
+                sorted_games[7],
+                sorted_games[8],
+                sorted_games[9]
+            ]
+            return top_10_games
         return
 
     def sortPrice(self,order):
+        if order == "ascending":
+            MinH = MinHeap.MinHeap(priority_field="price")
+            
+            MinH.importGames()
+            sorted_games = MinH.extractSortedGames()
+            top_10_games = [
+                sorted_games[0],
+                sorted_games[1],
+                sorted_games[2],
+                sorted_games[3], 
+                sorted_games[4],
+                sorted_games[5],
+                sorted_games[6],
+                sorted_games[7],
+                sorted_games[8],
+                sorted_games[9]
+            ]
+            return top_10_games
         return
 
     def getGenreGames(self,genre):
@@ -37,6 +74,7 @@ class GameStore:
         return
     def gameSelection(self,games):
         print("Enter ID to know more about the following games")
+        print("____________________________________")
         for i in games:
             print(i.id,i.name)
             print("Price: ",i.price)
@@ -45,6 +83,7 @@ class GameStore:
             for j in range(0,len(i.genre)):
                 print(i.genre[j], end=" ")
             print()
+            print("____________________________________")
         gameChoice = int(input())
         retrievedGame = self.findGame(gameChoice)
         if retrievedGame is None:
