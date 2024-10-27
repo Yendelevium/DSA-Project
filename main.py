@@ -38,7 +38,7 @@ class GameStore:
         self.gameTrie=Trie()
         self.gameNameToId = {}
 
-    # AVL Tree Stuff
+    # AVL
     def getAllGames(self):
         return self.gameAVL.inorderTraversal(self.gameAVL.root)
 
@@ -56,6 +56,7 @@ class GameStore:
         # You can have a hashmap which maps the game names to the id, and you can search the ids in an AVL Tree
         # Then return the list of games
 
+        # Use C to get the demo of more than one game
         matchedNames = self.gameTrie.search(gameName)
         if isinstance(matchedNames, bool) or not matchedNames:
             # If no exact match, try autocomplete
@@ -63,11 +64,11 @@ class GameStore:
             if not matchedNames:
                 # If no autocomplete results, try autocorrect
                 matchedNames = self.gameTrie.autocorrect(gameName)
-        matchedGames = [self.findGame(self.gameNameToId[name]) for name in matchedNames]
+        matchedGames = [self.findGame(self.gameNameToId[name]).id for name in matchedNames]
         if (len(matchedNames)> 1):
-            self.gameSelection(matchedGames)
+            self.gameSelection([self.findGame(self.gameNameToId[name]) for name in matchedNames])
         elif (len(matchedNames) == 1):
-            self.game_info(self.gameNameToId[matchedGames[0]])
+            self.game_info(matchedGames[0])
         else:
             print("No games found with the entered name")
 
@@ -202,8 +203,8 @@ while True:
 
     elif choice==6:
         name=input("Game Name\t:")
-        price=int(input("Price\t:"))
-        rating=int(input("Rating\t:"))
+        price=float(input("Price\t:"))
+        rating=float(input("Rating\t:"))
         genre=input("Genre(separated by space)\t:").split()
         id+=1
         newGame= Game(name,price,genre,rating,id)
