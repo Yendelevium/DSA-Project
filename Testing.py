@@ -35,10 +35,13 @@ class GameStore:
             if not matchedNames:
                 # If no autocomplete results, try autocorrect
                 matchedNames = self.gameTrie.autocorrect(gameName)
-        
         matchedGames = [self.findGame(self.gameNameToId[name]) for name in matchedNames]
-        for name in matchedNames:
-            self.game_info(self.gameNameToId[name])
+        if (len(matchedNames)> 1):
+            self.gameSelection(matchedGames)
+        elif (len(matchedNames) == 1):
+            self.game_info(self.gameNameToId[matchedGames[0]])
+        else:
+            print("No games found with the entered name")
 
     def sortRating(self,order):
         return
@@ -59,6 +62,11 @@ class GameStore:
             for j in range(0,len(i.genre)):
                 print(i.genre[j], end=" ")
             print()
+        search_id = int(input())
+        if(search_id <= id):
+            self.game_info(search_id)
+        else:
+            print("Invalid Game ID")
     def game_info(self,gameChoice):
         retrievedGame = self.findGame(gameChoice)
         if retrievedGame is None:
@@ -81,11 +89,12 @@ class GameStore:
             return
         else:
             return
+# Driver Code
 gameStore=GameStore()
 games = getGames()
 for i in games:
     gameStore.insertGame(i)
-id=31 #We alr have 31 games in the tree
+id=37 #We alr have 37 games in the tree
 while True:
     print("Welcome to <Name>")
     print("Enter the corresponding option number")
@@ -116,13 +125,13 @@ while True:
     if choice==1:
         allGames=gameStore.getAllGames()
         gameStore.gameSelection(allGames)
-        gameStore.game_info(int(input("Enter the ID of the game you want to know more about")))
-        
+
     elif choice==2:
         print("Enter the name of the game")
         gameSearch=input()
         foundGames=gameStore.gameNameSearch(gameSearch)
-        print("Found Games:",foundGames)
+        if (foundGames):    
+            print("Found Games:",foundGames)
         
     elif choice==3:
         print("1. High to Low")
@@ -165,13 +174,13 @@ while True:
 
     elif choice==6:
         name=input("Game Name\t:")
-        price=input("Price\t:")
-        rating=input("Rating\t:")
+        price=int(input("Price\t:"))
+        rating=int(input("Rating\t:"))
         genre=input("Genre(separated by space)\t:").split()
+        id+=1
         newGame= Game(name,price,genre,rating,id)
         gameStore.insertGame(newGame)
         print("Successfully added a new game!")
-        id+=1
     else:
         print("Not an option, Thank you for stopping by!")
         break
