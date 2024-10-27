@@ -3,7 +3,7 @@ from Trie import Trie
 from AVLTree import AVLTree
 from seeds import getGames
 from Minheap import MinHeap
-from MaxHeap import MaxHeap
+from MaxHeap import MaxHeap 
 from Graph import GameGraph
 
 class GameStore:
@@ -40,15 +40,22 @@ class GameStore:
         return
 
     def gameNameSearch(self, gameName):
+        # Must return a list of games which match
+        # You can have a hashmap which maps the game names to the id, and you can search the ids in an AVL Tree
+        # Then return the list of games
+
+        # Use C to get the demo of more than one game
         matchedNames = self.gameTrie.search(gameName)
         if isinstance(matchedNames, bool) or not matchedNames:
+            # If no exact match, try autocomplete
             matchedNames = self.gameTrie.autocomplete(gameName)
             if not matchedNames:
+                # If no autocomplete results, try autocorrect
                 matchedNames = self.gameTrie.autocorrect(gameName)
         matchedGames = [self.findGame(self.gameNameToId[name]).id for name in matchedNames]
-        if len(matchedNames) > 1:
+        if (len(matchedNames)> 1):
             self.gameSelection([self.findGame(self.gameNameToId[name]) for name in matchedNames])
-        elif len(matchedNames) == 1:
+        elif (len(matchedNames) == 1):
             self.game_info(matchedGames[0])
         else:
             print("No games found with the entered name")
@@ -97,20 +104,27 @@ class GameStore:
             return self.gameHeapPriceDesc.extractSortedGames()
         return []
 
-    def getGenreGames(self, genre):
-        return self.gameGraph.getGenreGames(genre)
+    def getGenreGames(self,genre):
+        genbased = self.gameGraph.getGenreGames(genre)
+        gs = []
+        for game in genbased:
+            gs.append(game)
+        return gs
 
-    def gameSelection(self, games):
+    def gameSelection(self,games):
         print("Enter ID to know more about the following games")
         print("____________________________________")
         for i in games:
-            print(i.id, i.name)
-            print("Price: ", i.price)
-            print("Rating: ", i.rating)
-            print("Genre(s):", " ".join(i.genre))
+            print(i.id,i.name)
+            print("Price: ",i.price)
+            print("Rating: ",i.rating)
+            print("Genre(s)")
+            for j in range(0,len(i.genre)):
+                print(i.genre[j], end=" ")
+            print()
         print("____________________________________")
         search_id = int(input())
-        if search_id in self.gameNameToId.values():
+        if(search_id <= id):
             self.game_info(search_id)
         else:
             print("Invalid Game ID")
@@ -142,8 +156,17 @@ class GameStore:
                 print()
             ch=input("Press any key to go back to homepage")
             return
+        elif ch == "N":
+            add_review = input("Would you like to add a review for this game? (Y/N)").upper()
+            if add_review == "Y":
+                author = input("Enter your name: ")
+                review = input("Enter your review: ")
+                retrievedGame.reviews[author] = review
+                print("Review added successfully!")
+            else:
+                print("No review added.")
         else:
-            return
+            print("Invalid option, returning to homepage.")
 
 # Driver Code
 gameStore=GameStore()
