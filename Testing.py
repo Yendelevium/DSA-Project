@@ -116,52 +116,65 @@ class GameStore:
             return
 
 # Driver Code
-gameStore = GameStore()
+gameStore=GameStore()
 games = getGames()
 for i in games:
     gameStore.insertGame(i)
-id = 37  # We already have 37 games in the tree
-
+id=37 #We alr have 37 games in the tree
 while True:
     print("Welcome to <Name>")
     print("Enter the corresponding option number")
-    print("1. View All Games")
-    print("2. Search for a game")
-    print("3. Show top 10 Games by Price")
-    print("4. Show top 10 Games by Rating")
-    print("5. Show Games by Genre")
-    print("6. Add a Game")
+    print("1. View All Games") #AVL
+        # Then we can do the selection process again
+    print("2. Search for a game") #Trie
+        #Searching - Exact Match Search, Search by Substring,
+        #Auto-Correct - (Use a Trie-based Levenshtein Distance to find titles within a 1-2 character difference) - Trie
+
+        #AFTER SELECTING THE GAME
+        #Add review - AVL
+        #Show related games - Graph
+        #Show related Genres - Graph
+    print("3. Show top 10 Games by Price") #Heap
+        #Then we can do the selection process again
+    print("4. Show top 10 Games by Rating") #Heap
+        # Then we can do the selection process again
+    print("5. Show Games by Genre") #Graph
+        # Then we can do the selection process again
+    print("6. Add a Game") #AVL, Graph, Trie, Heap - Insert in all
     print("Press Enter key to exit")
 
-    choice = input()
-    if choice == '':
+    choice=input()
+    if choice=='':
         print("Thank you for stopping by!")
         break
-    choice = int(choice)
-    
-    if choice == 1:
-        allGames = gameStore.getAllGames()
+    choice=int(choice)
+    if choice==1:
+        allGames=gameStore.getAllGames()
         gameStore.gameSelection(allGames)
 
-    elif choice == 2:
+    elif choice==2:
         print("Enter the name of the game")
-        gameSearch = input()
-        gameStore.gameNameSearch(gameSearch)
+        gameSearch=input()
+        foundGames=gameStore.gameNameSearch(gameSearch)
+        if (foundGames):
+            print("Found Games:",foundGames)
 
-    elif choice == 3:
+    elif choice==3:
         print("1. High to Low")
         print("2. Low to High")
-        ch = int(input())
-        if ch == 1:
-            sortedGames = gameStore.sortPrice("descending")
+        ch=int(input())
+        if ch==1:
+            sortedGames=gameStore.sortPrice("descending")
             gameStore.gameSelection(sortedGames)
-        elif ch == 2:
+
+        elif ch==2:
             sortedGames = gameStore.sortPrice("ascending")
             gameStore.gameSelection(sortedGames)
         else:
             raise IndexError("Choose correct value")
+            pass
 
-    elif choice == 4:
+    elif choice==4:
         print("1. High to Low")
         print("2. Low to High")
         ch = int(input())
@@ -173,8 +186,9 @@ while True:
             gameStore.gameSelection(sortedGames)
         else:
             raise IndexError("Choose correct value")
+            pass
 
-    elif choice == 5:
+    elif choice==5:
         print("Enter the number next to genre")
         for k, v in gameStore.gameGraph.genre_map.items():
             print(k, ":", v)
@@ -188,12 +202,13 @@ while True:
         else:
             print("Invalid genre choice. Please select a valid option.")
 
-    elif choice == 6:
-        name = input("Game Name\t:")
-        price = float(input("Price\t:"))
-        rating = float(input("Rating\t:"))
-        genre = input("Genre (separated by space)\t:").split()
-        genre = [g.capitalize() for g in genre]  # Capitalize each genre
+    elif choice==6:
+        name=input("Game Name\t:")
+        price=float(input("Price\t:"))
+        rating=float(input("Rating\t:"))
+        genre=input("Genre(separated by space)\t:").split()
+        for gen in range(len(genre)):
+            genre[gen] = genre[gen][0].capitalize() + genre[gen][1:]
         id += 1
         newGame = Game(name, price, genre, rating, id)
         gameStore.insertGame(newGame)
