@@ -68,15 +68,22 @@ class GameStore:
         return
 
     def gameNameSearch(self, gameName):
+        # Must return a list of games which match
+        # You can have a hashmap which maps the game names to the id, and you can search the ids in an AVL Tree
+        # Then return the list of games
+
+        # Use C to get the demo of more than one game
         matchedNames = self.gameTrie.search(gameName)
         if isinstance(matchedNames, bool) or not matchedNames:
+            # If no exact match, try autocomplete
             matchedNames = self.gameTrie.autocomplete(gameName)
             if not matchedNames:
+                # If no autocomplete results, try autocorrect
                 matchedNames = self.gameTrie.autocorrect(gameName)
         matchedGames = [self.findGame(self.gameNameToId[name]).id for name in matchedNames]
-        if len(matchedNames) > 1:
+        if (len(matchedNames)> 1):
             self.gameSelection([self.findGame(self.gameNameToId[name]) for name in matchedNames])
-        elif len(matchedNames) == 1:
+        elif (len(matchedNames) == 1):
             self.game_info(matchedGames[0])
         else:
             print("No games found with the entered name")
@@ -153,12 +160,23 @@ id = 37  # We already have 37 games in the tree
 while True:
     print("Welcome to <Name>")
     print("Enter the corresponding option number")
-    print("1. View All Games")
-    print("2. Search for a game")
-    print("3. Show top 10 Games by Price")
-    print("4. Show top 10 Games by Rating")
-    print("5. Show Games by Genre")
-    print("6. Add a Game")
+    print("1. View All Games") #AVL
+        # Then we can do the selection process again
+    print("2. Search for a game") #Trie
+        #Searching - Exact Match Search, Search by Substring,
+        #Auto-Correct - (Use a Trie-based Levenshtein Distance to find titles within a 1-2 character difference) - Trie
+
+        #AFTER SELECTING THE GAME
+        #Add review - AVL
+        #Show related games - Graph
+        #Show related Genres - Graph
+    print("3. Show top 10 Games by Price") #Heap
+        #Then we can do the selection process again
+    print("4. Show top 10 Games by Rating") #Heap
+        # Then we can do the selection process again
+    print("5. Show Games by Genre") #Graph
+        # Then we can do the selection process again
+    print("6. Add a Game") #AVL, Graph, Trie, Heap - Insert in all
     print("Press Enter key to exit")
 
     choice = input()
