@@ -2,37 +2,42 @@ from ADT import Game, Review
 from Trie import Trie
 from AVLTree import AVLTree
 from seeds import getGames
-from Graph import GameGraph
 from Minheap import MinHeap
+from MaxHeap import MaxHeap 
+from Graph import GameGraph
+
 class GameStore:
     def __init__(self):
-        self.gameAVL=AVLTree()
-        self.gameHeapRating=MinHeap("rating")
-        self.gameHeapPrice=MinHeap("price")
-        self.gameGraph=GameGraph()
-        self.gameTrie=Trie()
+        self.gameAVL = AVLTree()
+        self.gameHeapRating = MinHeap("rating")
+        self.gameHeapPrice = MinHeap("price")
+        self.gameHeapRatingDesc = MaxHeap("rating")
+        self.gameHeapPriceDesc = MaxHeap("price")
+        self.gameGraph = GameGraph()
+        self.gameTrie = Trie()
         self.gameNameToId = {}
 
-    # AVL
+    # AVL Tree Stuff
     def getAllGames(self):
         return self.gameAVL.inorderTraversal(self.gameAVL.root)
 
-    def findGame(self,id):
-        return self.gameAVL.searchNode(self.gameAVL.root,id)
+    def findGame(self, id):
+        return self.gameAVL.searchNode(self.gameAVL.root, id)
 
-    def insertGame(self,game):
-        self.gameAVL.root=self.gameAVL.insertGame(self.gameAVL.root,game)
+    def insertGame(self, game):
+        self.gameAVL.root = self.gameAVL.insertGame(self.gameAVL.root, game)
         self.gameTrie.insert(game.name)
         self.gameNameToId[game.name] = game.id
         self.gameHeapPrice.insert(game)
+        self.gameHeapPriceDesc.insert(game)  # Add to descending price heap
         self.gameHeapRating.insert(game)
+        self.gameHeapRatingDesc.insert(game)  # Add to descending rating heap
         self.gameGraph.add_game(game, game.genre)
         for gen in game.genre:
             l = len(self.gameGraph.genre_map)
             if gen not in self.gameGraph.genre_map.values():
                 self.gameGraph.genre_map[str(l + 1)] = gen
         return
-
 
     def gameNameSearch(self, gameName):
         # Must return a list of games which match
@@ -55,7 +60,7 @@ class GameStore:
         else:
             print("No games found with the entered name")
 
-    def sortRating(self,order):
+    def sortRating(self, order):
         if order == "ascending":
             MinH = self.gameHeapRating
             
@@ -73,9 +78,11 @@ class GameStore:
                 sorted_games[9]
             ]
             return top_10_games
-        return
+        elif order == "descending":
+            return self.gameHeapRatingDesc.extractSortedGames()
+        return []
 
-    def sortPrice(self,order):
+    def sortPrice(self, order):
         if order == "ascending":
             MinH = self.gameHeapPrice
             
@@ -93,7 +100,9 @@ class GameStore:
                 sorted_games[9]
             ]
             return top_10_games
-        return
+        elif order == "descending":
+            return self.gameHeapPriceDesc.extractSortedGames()
+        return []
 
     def getGenreGames(self,genre):
         genbased = self.gameGraph.getGenreGames(genre)
@@ -120,7 +129,7 @@ class GameStore:
         else:
             print("Invalid Game ID")
 
-    def game_info(self,gameChoice):
+    def game_info(self, gameChoice):
         retrievedGame = self.findGame(gameChoice)
         if retrievedGame is None:
             raise IndexError("Game doesn't exist")
@@ -129,27 +138,36 @@ class GameStore:
         print('Rating:', retrievedGame.rating)
         print('Genre(s):')
         for i in retrievedGame.genre:
-            print('\t',i)
+            print('\t', i)
 
         similar_games = self.gameGraph.similarGames(retrievedGame)
-        if similar_games:
+        if similar_games: 
             print("\nSimilar Games: ")
             for game_name in similar_games:
                 print("\t", game_name)
         else:
             print("\nNo Similar Games")
-        ch=input("Would you like to see the reviews?(Y/N)").upper()
-
-        # Todo : Adding reviews to the game
+        
+        ch = input("Would you like to see the reviews?(Y/N)").upper()
         if ch=="Y":
-            for i in retrievedGame.reviews:
-                print("Author:", i.author)
-                print("Review:", i.review)
+            for k,v in retrievedGame.reviews.items():
+                print("Author:", k)
+                print("Review:", v)
                 print()
             ch=input("Press any key to go back to homepage")
             return
+        elif ch == "N":
+            add_review = input("Would you like to add a review for this game? (Y/N)").upper()
+            if add_review == "Y":
+                author = input("Enter your name: ")
+                review = input("Enter your review: ")
+                retrievedGame.reviews[author] = review
+                print("Review added successfully!")
+            else:
+                print("No review added.")
         else:
-            return
+            print("Invalid option, returning to homepage.")
+
 # Driver Code
 gameStore=GameStore()
 games = getGames()
