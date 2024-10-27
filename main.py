@@ -139,17 +139,20 @@ class GameStore:
             gs.append(game)
         return gs
 
-    def gameSelection(self, games):
+    def gameSelection(self,games):
         print("Enter ID to know more about the following games")
         print("____________________________________")
         for i in games:
-            print(i.id, i.name)
-            print("Price: ", i.price)
-            print("Rating: ", i.rating)
-            print("Genre(s):", " ".join(i.genre))
+            print(i.id,i.name)
+            print("Price: ",i.price)
+            print("Rating: ",i.rating)
+            print("Genre(s)")
+            for j in range(0,len(i.genre)):
+                print(i.genre[j], end=" ")
+            print()
         print("____________________________________")
         search_id = int(input())
-        if search_id in self.gameNameToId.values():
+        if(search_id <= id):
             self.game_info(search_id)
         else:
             print("Invalid Game ID")
@@ -181,8 +184,17 @@ class GameStore:
                 print()
             ch=input("Press any key to go back to homepage")
             return
+        elif ch == "N":
+            add_review = input("Would you like to add a review for this game? (Y/N)").upper()
+            if add_review == "Y":
+                author = input("Enter your name: ")
+                review = input("Enter your review: ")
+                retrievedGame.reviews[author] = review
+                print("Review added successfully!")
+            else:
+                print("No review added.")
         else:
-            return
+            print("Invalid option, returning to homepage.")
 
 # Driver Code
 gameStore=GameStore()
