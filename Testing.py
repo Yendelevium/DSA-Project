@@ -2,10 +2,11 @@ from ADT import Game, Review
 from Trie import Trie
 from AVLTree import AVLTree
 from seeds import getGames
+from Graph import GameGraph
 class GameStore:
     def __init__(self):
         self.gameAVL=AVLTree()
-        self.gameGraph=None
+        self.gameGraph=GameGraph()
         self.gameHeap=None
         self.gameTrie=Trie()
         self.gameNameToId = {}
@@ -21,7 +22,13 @@ class GameStore:
         self.gameAVL.root=self.gameAVL.insertGame(self.gameAVL.root,game)
         self.gameTrie.insert(game.name)
         self.gameNameToId[game.name] = game.id
+        self.gameGraph.add_game(game, game.genre)
+        for gen in game.genre:
+            l = len(self.gameGraph.genre_map)
+            if gen not in self.gameGraph.genre_map.values():
+                self.gameGraph.genre_map[str(l + 1)] = gen
         return
+
 
     def gameNameSearch(self, gameName):
         # Must return a list of games which match
@@ -51,8 +58,12 @@ class GameStore:
         return
 
     def getGenreGames(self,genre):
-        # Graph
-        return
+        genbased = self.gameGraph.getGenreGames(genre)
+        gs = []
+        for game in genbased:
+            gs.append(game)
+        return gs
+
     def gameSelection(self,games):
         print("Enter ID to know more about the following games")
         for i in games:
@@ -68,6 +79,7 @@ class GameStore:
             self.game_info(search_id)
         else:
             print("Invalid Game ID")
+
     def game_info(self,gameChoice):
         retrievedGame = self.findGame(gameChoice)
         if retrievedGame is None:
@@ -78,6 +90,12 @@ class GameStore:
         print('Genre(s):')
         for i in retrievedGame.genre:
             print('\t',i)
+
+        similar_games = self.gameGraph.similarGames(retrievedGame)
+        if similar_games:
+            print("\nSimilar Games: ")
+            for game_name in similar_games:
+                print("\t", game_name)
         ch=input("Would you like to see the reviews?(Y/N)").upper()
 
         # Todo : Adding reviews to the game
@@ -131,9 +149,9 @@ while True:
         print("Enter the name of the game")
         gameSearch=input()
         foundGames=gameStore.gameNameSearch(gameSearch)
-        if (foundGames):    
+        if (foundGames):
             print("Found Games:",foundGames)
-        
+
     elif choice==3:
         print("1. High to Low")
         print("2. Low to High")
@@ -164,22 +182,28 @@ while True:
             pass
 
     elif choice==5:
-        print("Select Genre")
-        print("1. Idk")
-        print("2. Idk")
-        print("3. Idk")
+        print("Enter the number next to genre")
+        for k, v in gameStore.gameGraph.genre_map.items():
+            print(k, ":", v)
 
-        genre=input().upper()
-        genreGames=gameStore.getGenreGames(genre)
-        gameStore.gameSelection(genreGames)
+        genre_choice = input()
+        genre = gameStore.gameGraph.genre_map.get(genre_choice)
+
+        if genre:
+            genreGames = gameStore.getGenreGames(genre)
+            gameStore.gameSelection(genreGames)
+        else:
+            print("Invalid genre choice. Please select a valid option.")
 
     elif choice==6:
         name=input("Game Name\t:")
         price=float(input("Price\t:"))
         rating=float(input("Rating\t:"))
         genre=input("Genre(separated by space)\t:").split()
-        id+=1
-        newGame= Game(name,price,genre,rating,id)
+        for gen in range(len(genre)):
+            genre[gen] = genre[gen][0].capitalize() + genre[gen][1:]
+        id += 1
+        newGame = Game(name, price, genre, rating, id)
         gameStore.insertGame(newGame)
         print("Successfully added a new game!")
     else:
