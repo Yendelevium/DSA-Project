@@ -33,22 +33,24 @@ games = [
     Game("Apex Legends", 0, ["Multiplayer"], 8, 21),
     Game("Players Unknown Battlegrounds", 0, ["Multiplayer"], 9, 22),
 
+    # Adventure 
     Game("Horizon Forbidden West", 3599, ["Adventure"], 10, 23),
     Game("Detroit:Become Human", 2599, ["Adventure"], 8, 24),
     Game("Subnautica", 1599, ["Adventure"], 9, 25),
     Game("Uncharted : Legacy Of Thieves", 2099, ["Adventure"], 9, 26),
     Game("Red Dead Redemption 2", 1099, ["Adventure"], 10, 27),
 
+    # Sports
     Game("EAFC 25", 3599, ["Sports"], 3, 28),
     Game("F124", 599, ["Sports"], 4, 29),
     Game("Forza Horizon 5", 1899, ["Sports"], 8, 30),
     Game("NFS Unbound", 1799, ["Sports"], 5, 31),
     Game("NBA 2k25", 2899, ["Sports"], 6, 32),
 
+    # RPG
     Game("Baldur's Gate 3", 3099, ["RPG"], 9, 33),
     Game("Witcher 3", 1799, ["RPG"], 10, 34),
     Game("Diablo IV", 4099, ["RPG"], 4, 35),
     Game("Elden Ring", 3099, ["RPG"], 9, 36),
     Game("The Elder Scrolls V:Skyrim", 999, ["RPG"], 8, 37),
-
 ]
