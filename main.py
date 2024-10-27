@@ -183,19 +183,15 @@ class GameStore:
                 print("Author:", k)
                 print("Review:", v)
                 print()
-            ch=input("Press any key to go back to homepage")
-            return
-        elif ch == "N":
-            add_review = input("Would you like to add a review for this game? (Y/N)").upper()
-            if add_review == "Y":
-                author = input("Enter your name: ")
-                review = input("Enter your review: ")
-                retrievedGame.reviews[author] = review
-                print("Review added successfully!")
-            else:
-                print("No review added.")
+            ch=input("Press any key to go back")
+        add_review = input("Would you like to add a review for this game? (Y/N)").upper()
+        if add_review == "Y":
+            author = input("Enter your name: ")
+            review = input("Enter your review: ")
+            retrievedGame.reviews[author] = review
+            print("Review added successfully!")
         else:
-            print("Invalid option, returning to homepage.")
+            print("No review added.")
 
 # Driver Code
 gameStore=GameStore()
