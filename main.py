@@ -76,10 +76,16 @@ class GameStore:
         matchedNames = self.gameTrie.search(gameName)
         if isinstance(matchedNames, bool) or not matchedNames:
             # If no exact match, try autocomplete
-            matchedNames = self.gameTrie.autocomplete(gameName)
+            # Using starts_with to check if the game name starts with the input
+            if self.starts_with(gameName): 
+                matchedNames = self.gameTrie.autocomplete(gameName)
             if not matchedNames:
-                # If no autocomplete results, try autocorrect
+            # If no autocomplete results, try autocorrect
                 matchedNames = self.gameTrie.autocorrect(gameName)
+            if not matchedNames:
+                # If no autocorrect results or it doesn't start with the given word, try substring match
+                matchedNames = self.gameTrie.substring_match(gameName)
+        #Converting the game name list into game object list        
         matchedGames = [self.findGame(self.gameNameToId[name]).id for name in matchedNames]
         if (len(matchedNames)> 1):
             self.gameSelection([self.findGame(self.gameNameToId[name]) for name in matchedNames])
@@ -87,7 +93,7 @@ class GameStore:
             self.game_info(matchedGames[0])
         else:
             print("No games found with the entered name")
-
+            
     def sortRating(self, order):
         if order == "ascending":
             MinH = self.gameHeapRating
