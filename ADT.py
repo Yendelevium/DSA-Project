@@ -1,5 +1,5 @@
 class Game:
-    def __init__(self, name, price, genre, rating, game_id,reviews):
+    def __init__(self, name, price, genre, rating, game_id,reviews={}):
         self.name = name
         self.price = price
         self.rating = rating

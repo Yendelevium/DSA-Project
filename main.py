@@ -169,12 +169,13 @@ class GameStore:
             print('\t', i)
 
         similar_games = self.gameGraph.similarGames(retrievedGame)
-        if similar_games: 
+        if similar_games:
             print("\nSimilar Games: ")
-            for game_name in similar_games:
-                print("\t", game_name)
+            count = min(len(similar_games), 8)
+            for game_name in range(count):
+                print("\t", similar_games[game_name])
         else:
-            print("\nNo Similar Games")
+            print("\nNo Similar Games.")
         
         ch = input("Would you like to see the reviews?(Y/N)").upper()
         if ch=="Y":
@@ -182,19 +183,15 @@ class GameStore:
                 print("Author:", k)
                 print("Review:", v)
                 print()
-            ch=input("Press any key to go back to homepage")
-            return
-        elif ch == "N":
-            add_review = input("Would you like to add a review for this game? (Y/N)").upper()
-            if add_review == "Y":
-                author = input("Enter your name: ")
-                review = input("Enter your review: ")
-                retrievedGame.reviews[author] = review
-                print("Review added successfully!")
-            else:
-                print("No review added.")
+            ch=input("Press any key to go back")
+        add_review = input("Would you like to add a review for this game? (Y/N)").upper()
+        if add_review == "Y":
+            author = input("Enter your name: ")
+            review = input("Enter your review: ")
+            retrievedGame.reviews[author] = review
+            print("Review added successfully!")
         else:
-            print("Invalid option, returning to homepage.")
+            print("No review added.")
 
 # Driver Code
 gameStore=GameStore()
