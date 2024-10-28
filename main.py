@@ -77,7 +77,7 @@ class GameStore:
         if isinstance(matchedNames, bool) or not matchedNames:
             # If no exact match, try autocomplete
             # Using starts_with to check if the game name starts with the input
-            if self.starts_with(gameName): 
+            if self.gameTrie.starts_with(gameName): 
                 matchedNames = self.gameTrie.autocomplete(gameName)
             if not matchedNames:
             # If no autocomplete results, try autocorrect
