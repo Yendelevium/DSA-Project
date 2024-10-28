@@ -17,7 +17,6 @@ class GameStore:
         self.gameTrie = Trie()
         self.gameNameToId = {}
 
-    # AVL Tree Stuff
     def getAllGames(self):
         return self.gameAVL.inorderTraversal(self.gameAVL.root)
 
@@ -40,16 +39,11 @@ class GameStore:
         return
 
     def gameNameSearch(self, gameName):
-        # Must return a list of games which match
-        # You can have a hashmap which maps the game names to the id, and you can search the ids in an AVL Tree
-        # Then return the list of games
-
-        # Use C to get the demo of more than one game
         matchedNames = self.gameTrie.search(gameName)
         if isinstance(matchedNames, bool) or not matchedNames:
             # If no exact match, try autocomplete
             # Using starts_with to check if the game name starts with the input
-            if self.starts_with(gameName): 
+            if self.gameTrie.starts_with(gameName): 
                 matchedNames = self.gameTrie.autocomplete(gameName)
             if not matchedNames:
             # If no autocomplete results, try autocorrect
@@ -65,7 +59,7 @@ class GameStore:
             self.game_info(matchedGames[0])
         else:
             print("No games found with the entered name")
-
+            
     def sortRating(self, order):
         if order == "ascending":
             MinH = self.gameHeapRating
@@ -119,7 +113,7 @@ class GameStore:
 
     def gameSelection(self,games):
         print("Enter ID to know more about the following games")
-        print("____________________________________")
+        print("____________________________________\n")
         for i in games:
             print(i.id,i.name)
             print("Price: ",i.price)
@@ -127,7 +121,7 @@ class GameStore:
             print("Genre(s)")
             for j in range(0,len(i.genre)):
                 print(i.genre[j], end=" ")
-            print()
+            print("\n")
         print("____________________________________")
         search_id = int(input())
         if(search_id <= id):
@@ -161,46 +155,32 @@ class GameStore:
                 print("Author:", k)
                 print("Review:", v)
                 print()
-            ch=input("Press any key to go back to homepage")
-            return
-        elif ch == "N":
-            add_review = input("Would you like to add a review for this game? (Y/N)").upper()
-            if add_review == "Y":
-                author = input("Enter your name: ")
-                review = input("Enter your review: ")
-                retrievedGame.reviews[author] = review
-                print("Review added successfully!")
-            else:
-                print("No review added.")
+            ch=input("Press any key to go back")
+        add_review = input("Would you like to add a review for this game? (Y/N)").upper()
+        if add_review == "Y":
+            author = input("Enter your name: ")
+            review = input("Enter your review: ")
+            retrievedGame.reviews[author] = review
+            print("Review added successfully!")
         else:
-            print("Invalid option, returning to homepage.")
+            print("No review added.")
+        print()
 
 # Driver Code
 gameStore=GameStore()
 games = getGames()
 for i in games:
     gameStore.insertGame(i)
-id=37 #We alr have 37 games in the tree
+id=37 #We have 37 games in the tree
 while True:
-    print("Welcome to <Name>")
+    print("Welcome to GameStop")
     print("Enter the corresponding option number")
-    print("1. View All Games") #AVL
-        # Then we can do the selection process again
-    print("2. Search for a game") #Trie
-        #Searching - Exact Match Search, Search by Substring,
-        #Auto-Correct - (Use a Trie-based Levenshtein Distance to find titles within a 1-2 character difference) - Trie
-
-        #AFTER SELECTING THE GAME
-        #Add review - AVL
-        #Show related games - Graph
-        #Show related Genres - Graph
-    print("3. Show top 10 Games by Price") #Heap
-        #Then we can do the selection process again
-    print("4. Show top 10 Games by Rating") #Heap
-        # Then we can do the selection process again
-    print("5. Show Games by Genre") #Graph
-        # Then we can do the selection process again
-    print("6. Add a Game") #AVL, Graph, Trie, Heap - Insert in all
+    print("1. View All Games") 
+    print("2. Search for a game")
+    print("3. Show top 10 Games by Price") 
+    print("4. Show top 10 Games by Rating") 
+    print("5. Show Games by Genre") 
+    print("6. Add a Game")
     print("Press Enter key to exit")
 
     choice=input()
